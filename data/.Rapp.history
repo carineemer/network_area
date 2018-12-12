@@ -1,0 +1,250 @@
+for (i in 10:length(L)) {
+tmp <- computeModules(small1976) # your specific arguments
+tmp <- tmp@likelihood # just the slot you want
+L[[i]] <- tmp # put just the piece/answer you want into the list
+}
+L
+L <- vector("list", 10L)
+for (i in 1:length(L)) {
+tmp <- computeModules(small1976) # your specific arguments
+tmp <- tmp@likelihood # just the slot you want
+L[[i]] <- tmp # put just the piece/answer you want into the list
+}
+L
+N <- vector("list", 10L)
+str(tmp)
+N <- vector("list", 10L)
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+str(computeModules)
+tmpN <- printoutModuleInformation # just the slot you want
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+tmpN <- printoutModuleInformation # just the slot you want
+}
+L
+N <- vector("list", 2L)
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+tmpN <- printoutModuleInformation # just the slot you want
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+}
+L
+str(tmp)
+tmp <- computeModules(small1976) # your specific arguments
+str(tmp)
+N <- vector("list", 2L)
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+tmpN <- printoutModuleInformation@modules # just the slot you want
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+}
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+tmpN <- tmp@printoutModuleInformation # just the slot you want
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+}
+tmpN <- computeModules(small1976) # your specific arguments
+str(tmpN)
+str(data)
+dim(data)
+data(small1976)
+dim(data)
+data
+str(small1976)
+str(tmpN)
+printoutModuleInformation(tmpN)
+listModuleInformation(tmpN)
+nr of module@printoutModuleInformation(tmpN)
+module@printoutModuleInformation(tmpN)
+nrofmodule@printoutModuleInformation(tmpN)
+Nrofmodule@printoutModuleInformation(tmpN)
+printoutModuleInformation(tmpN)
+NrOfmodule@printoutModuleInformation(tmpN)
+NrOfModule@printoutModuleInformation(tmpN)
+printoutModuleInformation(tmpN)
+tmp <- computeModules(small1976) # your specific arguments
+tmp
+tmp <- tmp@likelihood # just the slot you want
+tmp
+tmp@no.of.modules
+tmp <- subset(ModuleWeb) # your subsetting requirements
+tmp <- subset(likelihood) # your subsetting requirements
+tmp <- subset(tmp,likelihood) # your subsetting requirements
+tmp@nr.of.modules
+str(tmp)
+tmp <- computeModules(small1976) # your specific arguments
+tmp@nr.of.modules
+tmp@no.of.modules
+tmp <- computeModules(small1976) # your specific arguments
+str(tmp)
+str(tmp@modules)
+for (i in 1:length(N)) {
+tmpN <- computeModules(small1976) # your specific arguments
+tmpN <- tmp@modules # just the slot you want
+# tmp <- subset(ModuleWeb) # your subsetting requirements
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+}
+L
+s1 <- which(tmp[,1]==1)
+tmp <- computeModules(small1976) # your specific arguments
+s1 <- which(tmp[,1]==1)
+??ModuleWeb
+str(ModuleWeb)
+dplyr::glimpse(tmp)
+tmp <- computeModules(small1976) # your specific arguments
+dplyr::glimpse(tmp)
+glimpse(tmp)
+library(dplyr)
+glimpse(tmp)
+str(tmp)
+glimpse(tmp)
+eox <- unlist(dimnames(data))
+eox
+str(eox)
+pl <- 40
+L <- vector("list", 1L)
+for (i in 1:length(L)) {
+tmp <- computeModules(data, deep = TRUE)
+tmp <- tmp@modules # just the slot you want
+tmp <- tmp[,-c(1,2,(ncol(tmp)-pl+1):ncol(tmp))] # delete columns of no interest
+ss1 <- which(tmp[,1]==1) # subsetting module 1
+L[[i]] <- eox[ss1] # put just the piece/answer you want into the list
+}
+tmp
+tmp <- subset(tmp, nr of modules)
+printoutModuleInformation
+modules = slot(moduleWebObject, "modules")
+listOfModules = listModuleInformation(moduleWebObject)
+tmp
+moduleWebObject
+modules
+N <- vector("list", 2L)
+for (i in 1:length(N)) {
+tmpN <- listModuleWeb(small1976) # your specific arguments
+tmpN <- tmp@no.of.modules # just the slot you want
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+L
+istModuleInformation
+oduleWebObject
+modules
+printoutModuleInformation
+computeModules
+tmpN <- printoutModuleInformation(small1976) # your specific arguments
+tmp<-computeModules(small1976)
+tmpN <- printoutModuleInformation(tmp) # your specific arguments
+printoutModuleInformation
+tmpN <- tmpN@modules # just the slot you want
+str(tmpN)
+tmpN
+tmpN <- printoutModuleInformation(tmp) # your specific arguments
+tmpN
+tmp
+tmpN <- printoutModuleInformation(tmp) # your specific arguments
+tmpN
+tmpN1 <- printoutModuleInformation(tmp) # your specific arguments
+tmpN1
+str(printoutModuleInformation)
+str(ModuleWebObject)
+str(moduleWebObject)
+listModuleInformation
+tmpN <- moduleWebObjects@modules # just the slot you want
+tmpN <- moduleWebObject@modules # just the slot you want
+tmpN <- tmpN@modules # just the slot you want
+tmpN <- tmp@modules # just the slot you want
+tmpN
+tmpN <- printoutModuleInformation(tmp) # your specific arguments
+computeModules
+printoutModuleInformation
+str(tmp)
+tmpN <- printoutModuleInformation(tmp) # your specific arguments
+str(tmpN)
+tmpN <- listModuleInformation(tmp) # your specific arguments
+tmpN
+listModuleInformation
+tmpN <- tmpN@modules # just the slot you want
+str(listModuleInformation)
+tmpN <- tmp@modules # just the slot you want
+tmpN
+tmpN <- tmp@moduleWebObject # just the slot you want
+tmpN <- tmpN@modules # just the slot you want
+tmpN <- tmpN@moduleWebObject # just the slot you want
+tmpN <- moduleWebObject@moduleWebs # just the slot you want
+moduleWebObject(data)
+listModuleInformation(data)
+listModuleInformation(tmp)
+listModuleInformation@modules(tmp)
+moduleWebObject(tmp)
+listModuleInformation@modules
+listModuleInformation
+ModuleWebObject(tmp)
+??ModuleWebObject
+ModuleWebObject<-small1976
+listModuleInformation@modules(tmp)
+listModuleInformation@modules(small1976)
+str(listModuleInformation)
+str(moduleWebObject)
+glimpse(listModuleInformation)
+nr of modules
+tmp <- subset(tmp, nrofmodules)
+ModuleWebObject
+listModuleInformation@modules(small1976)
+listModuleInformation(small1976)
+data(small1976)
+listOfModules(data)
+tmpN <- listModuleInformation(tmp) # your specific arguments
+tmpN
+str(tmpN)
+tmpN <- tmpN@moduleWebs # just the slot you want
+tmpN <- tmpN@no.of.modules # just the slot you want
+tmpN <- tmpN@modules # just the slot you want
+str(moduleWebObject)
+tmp <- subset(tmpN, nrofmodules)
+listModuleInformation
+tmpN <- listModuleInformation(tmp) # your specific arguments
+tmpN
+str(tmpN)
+glimpse(tmpN)
+tmpN <- tmpN@module # just the slot you want
+tmpN <- tmpN@modules # just the slot you want
+N <- vector("list", 2L)
+for (i in 1:length(N)) {
+tmp<-computeModules(small1976)
+tmpN <- listModuleInformation(tmp) # your specific arguments
+L[[i]] <- tmpN # put just the piece/answer you want into the list
+}
+L
+subset
+tmpN1 <- subset(tmpN,modules) # your subsetting requirements
+library(vegan);library(xlsx);library(bipartite)
+library(vegan)
+setwd("~/Dropbox/Seed dispersal data Atlantic/matrices last update/quanti")
+restoredPira<-read.csv("vivian quanti.csv",head=T,row.names=1)
+fragmentRC<-read.csv("w34 Athie RC.csv",head=T,row.names=1)
+Cardoso<-read.csv("w44 Castro Cardoso.csv",head=T,row.names=1)
+RebioPcAntas<-read.csv("w30 Correia PcAntas.csv",head=T,row.names=1)
+fragmentMG<-read.csv("w36 Fadini MG.csv",head=T,row.names=1)
+restored15<-read.csv("fe15 quanti.csv",head=T,row.names=1)
+restored25<-read.csv("fe25 quanti.csv",head=T,row.names=1)
+restored57<-read.csv("fe57 quanti.csv",head=T,row.names=1)
+StaGenebra<-read.csv("w35 Galetti Pizo.csv",head=T,row.names=1)
+fragmentSP<-read.csv("w32 Hasui.csv",head=T,row.names=1)
+IAnchieta<-read.csv("w28 Kaiser.csv",head=T,row.names=1)
+FAraucaria<-read.csv("w33 Kindel.csv",head=T,row.names=1)
+Itatiba<-read.csv("pizo quanti.csv",head=T,row.names=1)
+Intervales<-read.csv("w37 Wesley.csv",head=T,row.names=1)
+CBotelho<-read.csv("w95 Botelho.csv",head=T,row.names=1)
+fragmentRJ<-read.csv("w93 Rafael UFRJ.csv",head=T,row.names=1)
+lst1 <- list(Cardoso,CBotelho,FAraucaria,fragmentMG,fragmentRC,fragmentRJ,fragmentSP,IAnchieta,Intervales,Itatiba,RebioPcAntas,restored15,restored25,restored57, restoredPira,StaGenebra)
+result <- lapply(lst1, nestednodf)
+result<-as.matrix(result)
+result<-as.matrix(result)
+write.csv(result,"nodf_quanti.csv")
+wnodf<-nestednodf(RebioPcAntas)
+wnodf<-nestednodf(RebioPcAntas)
+wnodf<-nestednodf(RebioPcAntas)
+wnodf<-nestednodf(RebioPcAntas)
+wnodf
+wnodf<-nestednodf(RebioPcAntas, weighted=T)
+wnodf<-nestednodf(RebioPcAntas, weighted=T)
+wnodf
