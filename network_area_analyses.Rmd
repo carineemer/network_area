@@ -1,0 +1,103 @@
+---
+title: "MS Network Area AF"
+author: "Carine Emer"
+date: "12/12/2018"
+output: html_document
+---
+
+updating code from "metanetwork analyses March 2017.Rmd"(setwd("~/Dropbox/Seed dispersal data Atlantic/updated names/quanti")
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r set working directory}
+setwd("~/Dropbox/MS network area AF/Analyses/network_area")
+```
+
+
+```{r packages}
+library(bipartite); library(vegan); library(MuMIn)
+library(lme4);library(nlme); library(fossil)
+```
+
+```{r input data}
+setwd("~/Dropbox/MS network area AF/Analyses/network_area/data")
+restoredPira<-read.csv("vivian quanti.csv",head=T,row.names=1)
+fragmentRC<-read.csv("w34 Athie RC.csv",head=T,row.names=1) 
+Cardoso<-read.csv("w44 Castro Cardoso.csv",head=T,row.names=1) 
+RebioPcAntas<-read.csv("w30 Correia PcAntas.csv",head=T,row.names=1) 
+fragmentMG<-read.csv("w36 Fadini MG.csv",head=T,row.names=1) 
+restored15<-read.csv("fe15 quanti.csv",head=T,row.names=1) 
+restored25<-read.csv("fe25 quanti.csv",head=T,row.names=1) 
+restored57<-read.csv("fe57 quanti.csv",head=T,row.names=1) 
+StaGenebra<-read.csv("w35 Galetti Pizo.csv",head=T,row.names=1) 
+fragmentSP<-read.csv("w32 Hasui.csv",head=T,row.names=1) 
+IAnchieta<-read.csv("w28 Kaiser original.csv",head=T,row.names=1) 
+FAraucaria<-read.csv("w33 Kindel.csv",head=T,row.names=1) 
+Itatiba<-read.csv("pizo quanti.csv",head=T,row.names=1) 
+Intervales<-read.csv("w37 Wesley.csv",head=T,row.names=1)
+CBotelho<-read.csv("w95 Botelho.csv",head=T,row.names=1)
+fragmentRJ<-read.csv("w93 Rafael UFRJ.csv",head=T,row.names=1)
+
+
+data<-read.csv("final_results_communities.csv", header=T) # original = CArdoso and Anchieta without added data on E. edulis, Clusia and Cryptocharia, removed all Psittacidae
+
+```
+
+```{r modularity}
+comm<-list(Intervales,CBotelho,Cardoso,RebioPcAntas,IAnchieta,fragmentMG,
+           FAraucaria,StaGenebra,Itatiba,fragmentRC,restored57,
+           restored15,restored25,fragmentSP,restoredPira,fragmentRJ)
+
+mod<-sapply(comm,computeModules)
+mod[[1]]
+mod_comm<-c(mod[[1]]@likelihood,mod[[2]]@likelihood,mod[[3]]@likelihood,mod[[4]]@likelihood,mod[[5]]@likelihood,mod[[6]]@likelihood,mod[[7]]@likelihood,mod[[8]]@likelihood,mod[[9]]@likelihood,mod[[10]]@likelihood,mod[[11]]@likelihood,mod[[12]]@likelihood,mod[[13]]@likelihood,mod[[14]]@likelihood,mod[[15]]@likelihood,mod[[16]]@likelihood)
+
+
+```
+
+```{r metrics}
+
+c_comm<-sapply(comm,networklevel, index = "connectance")
+h2_comm<-sapply(comm,networklevel, index = "H2")
+cor.test(c_comm,h2_comm) # 0.14
+
+wnodf<-sapply(comm, networklevel, index = "weighted NODF")
+cor.test(mod_comm,h2_comm) 
+plot(wnodf,mod_comm)
+plot(wnodf,h2_comm)
+
+str(wnodf)
+
+
+```
+
+```{r sampling completeness}
+
+chao<-chao1(Intervales)
+chao1(fragmentRJ)
+1100/240
+
+```
+
+
+
+
+```{r models}
+####logs= log size of the network and logarea = log(area)
+plot((data$size))
+logs<-log(data$size) ## better fit
+plot(logs)
+
+plot(data$area)
+logarea<-log(data$area)
+plot(logarea) # better fit
+
+
+
+
+
+```
+
