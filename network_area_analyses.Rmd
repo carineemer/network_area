@@ -20,6 +20,22 @@ setwd("~/Dropbox/MS network area AF/Analyses/network_area")
 ```{r packages}
 library(bipartite); library(vegan); library(MuMIn)
 library(lme4);library(nlme); library(fossil)
+library(bipartiteD3); library(reshape2)
+
+library(r2d3)
+library(bipartite)
+library(purrr) 
+library(dplyr) 
+library(tidyr) 
+library(stringr)
+library(tibble)
+library(RColorBrewer)
+
+library(bipartiteD3)
+
+
+
+
 ```
 
 ```{r input data}
@@ -341,5 +357,30 @@ summary(get.models(dd,2)[[1]])
 ## finally, refit best models with REML for final results
 m1best<-m1<-gls(h2 ~ intensity, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m1best)
+```
+
+
+```{r plot bipartiteD3}
+
+test1<-melt(as.matrix(CBotelho))
+test1 <- subset(test1, value>0)
+test1$webID <- c(rep("Carlos Botelho"))
+
+colnames(test1)[1]<-"lower"
+colnames(test1)[2]<-"higher"
+colnames(test1)[3]<-"freq"
+
+bipartite::frame2webs(test1)-> webtest
+
+colourCount = length(unique(test1$webID))
+getPalette = colorRampPalette(brewer.pal(240, "Set1"))
+
+
+bipartite_D3(webtest, PrimaryLab = 'Plants',
+            SecondaryLab = 'Birds',
+            colouroption = 'brewer',
+            Orientation = 'vertical', ColourBy = 1,
+            filename = 'demo1')
+
 ```
 
