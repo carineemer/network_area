@@ -168,7 +168,7 @@ hist(data$n.animals)
 hist(log(data$n.animals))
 animals<-log(data$n.animals)
 ## first, REML to compare fixed terms and variable random or correlation structure -Zuur p 90 e 169
-m1<-gls(animals ~ logs+logarea+forest.type, data=data,method="REML")# 
+m1<-gls(animals ~ intensity+logarea+forest.type, data=data,method="REML")# 
 #m2<-gls(plants ~ logs+def2Jac*logarea, data=data,method="REML")
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
@@ -187,7 +187,7 @@ print(dd)
 summary(get.models(dd,1)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(animals~ logarea, data=data, method="REML", correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(animals~logarea, data=data, method="REML", correlation=corSpher(form=~x+y))
 summary (m1best)
 
 ###############plants##########################
@@ -198,7 +198,7 @@ plants<-log(data$n.plants)
 ## first, REML to compare fixed terms
 
 m1<-gls(plants ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(plants ~ logs+logarea+forest.type, data=data,method="REML")
+#m1<-gls(plants ~ logs+logarea+forest.type, data=data,method="REML")
 
 #AIC(m1,m2)
 
@@ -211,7 +211,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(plants~ logsize+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(plants~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -229,9 +229,7 @@ interactions<-log(data$n.interactions)
 
 ## first, REML to compare fixed terms
 m1<-gls(interactions ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(interactions ~ logsize+logarea+forest.type, data=data,method="REML")
-
-AIC(m1,m2)
+#m1<-gls(interactions ~ logsize+logarea+forest.type, data=data,method="REML")
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -259,7 +257,7 @@ hist(data$c)
 
 ## first, REML to compare fixed terms
 m1<-gls(log(c+0.0649)/(1-c+0.0649) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(log(c+0.0649)/(1-c+0.0649) ~ logsize+logarea+forest.type, data=data,method="REML")
+#m1<-gls(log(c+0.0649)/(1-c+0.0649) ~ logsize+logarea+forest.type, data=data,method="REML")
 #m3<-gls(c ~ logsize+res1+forest.type, data=data,method="REML")
 
 #AIC(m1,m2)
@@ -281,7 +279,7 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-gls(c ~ logsize, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-gls(log(c+0.0649)/(1-c+0.0649) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m1best)
 
 plot(data$c~logsize)
@@ -292,7 +290,7 @@ plot(data$c~logsize)
 hist(data$dirt_mod_quanti)
 ## first, REML to compare fixed terms
 m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize+logarea+forest.type, data=data,method="REML")
+#m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize+logarea+forest.type, data=data,method="REML")
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -303,7 +301,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441)~ logsize+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -317,10 +315,8 @@ summary (m1best)
 ##############Nestedness###########################
 hist(data$wnodf)
 ## first, REML to compare fixed terms
-m1<-gls(wnodf ~ intensity+def+forest.type, data=data,method="REML")# 
-m2<-gls(wnodf ~ logsize+logarea+forest.type, data=data,method="REML")
-
-m1<-m2
+m1<-gls(wnodf ~ intensity+logarea+forest.type, data=data,method="REML")# 
+#m2<-gls(wnodf ~ logsize+logarea+forest.type, data=data,method="REML")
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -331,7 +327,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(wnodf~ logsize+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(wnodf~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -342,7 +338,7 @@ summary(get.models(dd,2)[[1]])
 m1best<-m1<-gls(wnodf ~ intensity+logarea, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m1best)
 
-m2best<-m1<-gls(wnodf ~ logsize, data=data, method="REML",correlation=corSpher(form=~x+y))
+m2best<-m1<-gls(wnodf ~ intensity, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m2best)
 
 ##############H2###########################
@@ -350,7 +346,7 @@ hist(data$h2)
 
 ## first, REML to compare fixed terms
 m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ logsize+logarea+forest.type, data=data,method="REML")
+#m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ logsize+logarea+forest.type, data=data,method="REML")
 
 AIC(m1,m2)
 
@@ -363,7 +359,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(h2+0.0673)/(1-h2+0.0673)~ logsize+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(h2+0.0673)/(1-h2+0.0673)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -371,7 +367,7 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ logsize, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m1best)
 
 
@@ -380,7 +376,7 @@ summary (m1best)
 
 ## first, REML to compare fixed terms
 m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logsize+logarea+forest.type, data=data,method="REML")
+#m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logsize+logarea+forest.type, data=data,method="REML")
 #m3<-gls(c ~ logsize+res1+forest.type, data=data,method="REML")
 
 #AIC(m1,m2)
@@ -394,7 +390,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514)~ logsize+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -402,7 +398,7 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
 summary (m1best)
 
 plot(log(data$evenness+0.5514)/(data$evenness+0.5514)~logarea)
@@ -487,8 +483,6 @@ grid.arrange(sp1, sp2, sp3, legend,
              sp4, sp5, sp6, ncol=4, nrow=2,
              widths = c(6,6,6,2), heights = c(2,2))
 ```
-
-
 
 
 ```{r plot bipartiteD3}
