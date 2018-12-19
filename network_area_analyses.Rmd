@@ -180,15 +180,18 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(animals~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(animals~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
 summary(get.models(dd,1)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(animals~logarea, data=data, method="REML", correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(animals~logarea, data=data, method="REML")
 summary (m1best)
+
+m2best<-gls(animals~intensity+logarea, data=data, method="REML")
+summary (m2best)
 
 ###############plants##########################
 #plants
@@ -240,7 +243,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(interactions~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(interactions~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -248,7 +251,7 @@ summary(get.models(dd,1)[[1]])
 
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(interactions ~ logarea+intensity, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(interactions ~ logarea+intensity, data=data, method="REML")
 summary (m1best)
 
 
@@ -301,7 +304,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -309,7 +312,7 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize, data=data, method="REML")
 summary (m1best)
 
 ##############Nestedness###########################
@@ -327,7 +330,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(wnodf~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(wnodf~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -335,11 +338,10 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(wnodf ~ intensity+logarea, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-m1<-gls(wnodf ~ intensity+logarea, data=data, method="REML")
 summary (m1best)
 
-m2best<-m1<-gls(wnodf ~ intensity, data=data, method="REML",correlation=corSpher(form=~x+y))
-summary (m2best)
+
 
 ##############H2###########################
 hist(data$h2)
@@ -372,14 +374,13 @@ summary (m1best)
 
 
 
-############## evenness ###########################
+############## evenness ##########################
 
-## first, REML to compare fixed terms
+## first, REML to compare fixed term
 m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ intensity+logarea+forest.type, data=data,method="REML")# 
 #m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logsize+logarea+forest.type, data=data,method="REML")
 #m3<-gls(c ~ logsize+res1+forest.type, data=data,method="REML")
 
-#AIC(m1,m2)
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -390,7 +391,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -398,11 +399,11 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ 1, data=data, method="REML")
 summary (m1best)
 
-plot(log(data$evenness+0.5514)/(data$evenness+0.5514)~logarea)
-abline(m1best)
+m2best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea, data=data, method="REML")
+summary (m2best)
 
 
 
