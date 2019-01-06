@@ -20,7 +20,7 @@ setwd("~/Dropbox/MS network area AF/Analyses/network_area")
 ```{r packages}
 library(bipartite); library(vegan); library(MuMIn)
 library(lme4);library(nlme); library(fossil)
-library(bipartiteD3); library(reshape2)
+library(bipartiteD3); library(reshape2); library(reshape)
 
 library(r2d3)
 library(bipartite)
@@ -58,7 +58,6 @@ Itatiba<-read.csv("pizo quanti.csv",head=T,row.names=1)
 Intervales<-read.csv("w37 Wesley.csv",head=T,row.names=1)
 CBotelho<-read.csv("w95 Botelho.csv",head=T,row.names=1)
 fragmentRJ<-read.csv("w93 Rafael UFRJ.csv",head=T,row.names=1)
-
 
 data<-read.csv("final_results_communities.csv", header=T) # original = CArdoso and Anchieta without added data on E. edulis, Clusia and Cryptocharia, removed all Psittacidae
 
@@ -147,7 +146,8 @@ pairs(data2, pch = 19)
 str(comm)
 chao<-sapply(comm, chao1)
 chao
-
+data<-cbind(data,chao)
+data$chao
 
 
 ```
@@ -257,7 +257,6 @@ summary (m1best)
 
 ##############connectance###########################
 hist(data$c)
-
 ## first, REML to compare fixed terms
 m1<-gls(log(c+0.0649)/(1-c+0.0649) ~ intensity+logarea+forest.type, data=data,method="REML")# 
 #m1<-gls(log(c+0.0649)/(1-c+0.0649) ~ logsize+logarea+forest.type, data=data,method="REML")
@@ -274,7 +273,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(c+0.0649)/(1-c+0.0649)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(c+0.0649)/(1-c+0.0649)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1)
 print(dd)
@@ -282,12 +281,11 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-gls(log(c+0.0649)/(1-c+0.0649) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-gls(log(c+0.0649)/(1-c+0.0649) ~ 1, data=data, method="REML")
 summary (m1best)
 
-plot(data$c~logsize)
-
-
+m1best<-gls(log(c+0.0649)/(1-c+0.0649) ~ intensity, data=data, method="REML")
+summary (m1best)
 
 ##############modularity###########################
 hist(data$dirt_mod_quanti)
@@ -415,11 +413,11 @@ summary (m2best)
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠ function to set a legend for multiple panels
 #library(gridExtra)
 #get_legend<-function(myggplot){
-  tmp <- ggplot_gtable(ggplot_build(myggplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)
-}
+  #tmp <- ggplot_gtable(ggplot_build(myggplot))
+  #leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  #legend <- tmp$grobs[[leg]]
+  #return(legend)
+#}
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠ 
 # 1. Create the plots
 #++++++++++++++++++++++++++++++++++
@@ -431,9 +429,12 @@ summary (m2best)
 #bp <- bp + theme(legend.position="none")
 # 4. Arrange ggplot2 graphs with a specific width
 
-Defaunation<-data$def
+### defaunation index used in Science paper
+def<-c(0.557,0.615,0.626,0.926,0.958,0.838,0.96,0.837,0.897,0.963,0.986,
+       0.971,0.95,0.952,0.956,0.971)
+data<-cbind(data,def)
 #1. Scatter plots
-sp1 <- ggplot(data, aes(x = logarea, y = (n.animals), size = 4, fill=Defaunation)) +
+sp1 <- ggplot(data, aes(x = logarea, y = (n.animals), size = 4, fill=def)) +
              geom_point(shape = 21) +
              labs(x = "", y = "N bird species")
 sp1<-sp1 + scale_fill_continuous(low = "#56B1F7", high = "#132B43") +
@@ -502,8 +503,6 @@ bipartite_D3(webtest, PrimaryLab = 'Plants',
             SecondaryLab = 'Birds',
             colouroption = 'brewer',
             Orientation = 'vertical', ColourBy = 1)
-         
-
 
 
 ```
