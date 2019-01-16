@@ -61,7 +61,7 @@ fragmentRJ<-read.csv("w93 Rafael UFRJ.csv",head=T,row.names=1)
 
 data<-read.csv("final_results_communities.csv", header=T) # original = CArdoso and Anchieta without added data on E. edulis, Clusia and Cryptocharia, removed all Psittacidae
 
-#save.image("network_area.RData")
+save.image("network_area.RData")
 
 ```
 
@@ -69,10 +69,45 @@ data<-read.csv("final_results_communities.csv", header=T) # original = CArdoso a
 comm<-list(Intervales,CBotelho,Cardoso,RebioPcAntas,IAnchieta,fragmentMG,
            FAraucaria,StaGenebra,Itatiba,fragmentRC,restored57,
            restored15,restored25,fragmentSP,restoredPira,fragmentRJ)
-
 mod<-sapply(comm,computeModules)
 mod[[1]]
 mod_comm<-c(mod[[1]]@likelihood,mod[[2]]@likelihood,mod[[3]]@likelihood,mod[[4]]@likelihood,mod[[5]]@likelihood,mod[[6]]@likelihood,mod[[7]]@likelihood,mod[[8]]@likelihood,mod[[9]]@likelihood,mod[[10]]@likelihood,mod[[11]]@likelihood,mod[[12]]@likelihood,mod[[13]]@likelihood,mod[[14]]@likelihood,mod[[15]]@likelihood,mod[[16]]@likelihood)
+
+data<-cbind(data,mod)
+
+#############
+
+Msig <- function (x, y)  {
+    require(bipartite)
+    # mat is the input matrix for which M is tested
+    # mlike is the observed mean M value
+    nulls <- nullmodel(x, N=100, method=3) ## 2 = swapweb, connectance and marginal totals constant (ie, constrait degree for sites and interactions/spp)
+    modules.nulls <- sapply(nulls, computeModules)
+    like.nulls <- sapply(modules.nulls, function(x) x@likelihood)
+    z <- (y - mean(like.nulls))/sd(like.nulls)
+    p <- 2*pnorm(-abs(z))
+}
+z_mod1<-Msig(comm[[1]],mod[1])
+z_mod2<-Msig(comm[[2]],mod[2])
+z_mod3<-Msig(comm[[3]],mod[3])
+z_mod4<-Msig(comm[[4]],mod[4])
+z_mod5<-Msig(comm[[5]],mod[5])
+z_mod6<-Msig(comm[[6]],mod[6])
+z_mod7<-Msig(comm[[7]],mod[7])
+z_mod8<-Msig(comm[[8]],mod[8])
+z_mod9<-Msig(comm[[9]],mod[9])
+z_mod10<-Msig(comm[[10]],mod[10])
+z_mod11<-Msig(comm[[11]],mod[11])
+z_mod12<-Msig(comm[[12]],mod[12])
+z_mod13<-Msig(comm[[13]],mod[13])
+z_mod14<-Msig(comm[[14]],mod[14])
+z_mod15<-Msig(comm[[15]],mod[15])
+z_mod16<-Msig(comm[[16]],mod[16])
+
+z_mod<-c(z_mod1,z_mod2,z_mod3,z_mod4,z_mod5,z_mod6,z_mod7,z_mod8,z_mod9,z_mod10,z_mod11,z_mod12,z_mod13,z_mod14,z_mod15,z_mod16)
+data<-cbind(data,z_mod)
+
+plot(data$z_mod~data$area_ha)
 
 
 ```
@@ -92,7 +127,9 @@ cor.test(c_comm,h2_comm) # 0.14
 wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
 cor.test(wc_comm,c_comm) # 0.80
 
-
+links<-sapply(comm, networklevel, index = "links per species")
+cor.test(mod_comm,links) 
+plot(links,data$area_ha)
 
 wnodf<-sapply(comm, networklevel, index = "weighted NODF")
 cor.test(mod_comm,h2_comm) 
@@ -404,7 +441,29 @@ m2best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea, data=data, metho
 summary (m2best)
 
 
+############# links per species ##########################
+links
+## first, REML to compare fixed term
+m1<-gls(links ~ intensity+logarea+forest.type, data=data,method="REML")# 
 
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(links~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1)
+print(dd)
+summary(get.models(dd,1)[[1]])
+
+## finally, refit best models with REML for final results
+m1best<-gls(links ~ logarea, data=data, method="REML")
+summary (m1best)
 
 ```
 
@@ -489,9 +548,9 @@ grid.arrange(sp1, sp2, sp3, legend,
 
 ```{r plot bipartiteD3}
 
-test1<-melt(as.matrix(Itatiba))
+test1<-melt(as.matrix(Intervales))
 test1 <- subset(test1, value>0)
-test1$webID <- c(rep("Itatiba"))
+test1$webID <- c(rep("Intervales"))
 
 colnames(test1)[1]<-"lower"
 colnames(test1)[2]<-"higher"
@@ -502,8 +561,77 @@ bipartite::frame2webs(test1)-> webtest
 bipartite_D3(webtest, PrimaryLab = 'Plants',
             SecondaryLab = 'Birds',
             colouroption = 'brewer',
-            Orientation = 'vertical', ColourBy = 1)
+            Orientation = 'horizontal', ColourBy = 1)
 
 
+```
+
+
+```{r networks igraph}
+
+#seed_network<-plotweb(Intervales,text.rot=c(90),labsize=1,y.width.low=0.05,y.width.high=0.05,        arrow="down.center",ybig=1.8, low.y=1.2, high.y=2, high.spacing=.04, low.spacing=0.02,        bor.col.interaction = "grey80",        method="cca", ### check the method if you prefer        col.low="green", col.high="blue", col.interaction = "grey80")
+
+#################
+##igraph
+m<- Intervales
+## transform to edgelist
+m1<-melt(as.matrix(m)) 
+## select only interactions =1
+m2 <- subset(m1, value>0) 
+
+# sets the graph framework
+  g=graph.data.frame(m2,directed=FALSE) 
+#Check the main properties of the igraph object
+V(g)$name
+
+V(g)$color[1:184] = "green"
+V(g)$color[185:265] = "blue"
+
+plot(g,
+      # Set the drawing mode
+      # This package contains several drawing methods; try them!
+     layout=layout.circle,
+       # Set title
+     #main='Ant-myrmecophyte network',
+       # Set node sizes
+     vertex.size=6,
+     # Set node attributes
+     #vertex.shape=V(g)$shape,
+     vertex.color = V(g)$color,
+     # Set link colors
+           edge.color = "lightblue",
+      # Set link curvature from 0 to 1
+           edge.curved=0.3,
+      # Set nodes labels
+     vertex.label.dist=200,
+     vertex.label.color='black',
+     vertex.label.font=1,
+     vertex.label=V(g)$name,
+     vertex.label.cex=0.5
+)
+
+#########
+m<- restored25
+m1<-melt(as.matrix(m)) 
+m2 <- subset(m1, value>0) 
+
+g=graph.data.frame(m2,directed=FALSE) 
+
+V(g)$name
+V(g)$color[1:23] = "green"
+V(g)$color[24:52] = "blue"
+
+plot(g,
+     layout=layout.circle,
+         vertex.size=6,
+         vertex.color = V(g)$color,
+               edge.color = "lightblue",
+               edge.curved=0.3,
+     vertex.label.dist=200,
+     vertex.label.color='black',
+     vertex.label.font=1,
+     vertex.label=V(g)$name,
+     vertex.label.cex=0.5
+)
 ```
 
