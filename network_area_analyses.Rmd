@@ -34,6 +34,7 @@ library(RColorBrewer)
 library(bipartiteD3)
 library(ggplot2)
 library("cowplot")
+library(igraph)
 
 
 
@@ -568,70 +569,33 @@ bipartite_D3(webtest, PrimaryLab = 'Plants',
 
 
 ```{r networks igraph}
-
-#seed_network<-plotweb(Intervales,text.rot=c(90),labsize=1,y.width.low=0.05,y.width.high=0.05,        arrow="down.center",ybig=1.8, low.y=1.2, high.y=2, high.spacing=.04, low.spacing=0.02,        bor.col.interaction = "grey80",        method="cca", ### check the method if you prefer        col.low="green", col.high="blue", col.interaction = "grey80")
-
 #################
 ##igraph
-m<- Intervales
-## transform to edgelist
-m1<-melt(as.matrix(m)) 
-## select only interactions =1
-m2 <- subset(m1, value>0) 
-
-# sets the graph framework
-  g=graph.data.frame(m2,directed=FALSE) 
-#Check the main properties of the igraph object
-V(g)$name
-
-V(g)$color[1:184] = "green"
-V(g)$color[185:265] = "blue"
-
-plot(g,
-      # Set the drawing mode
-      # This package contains several drawing methods; try them!
-     layout=layout.circle,
-       # Set title
-     #main='Ant-myrmecophyte network',
-       # Set node sizes
-     vertex.size=6,
-     # Set node attributes
-     #vertex.shape=V(g)$shape,
-     vertex.color = V(g)$color,
-     # Set link colors
-           edge.color = "lightblue",
-      # Set link curvature from 0 to 1
-           edge.curved=0.3,
-      # Set nodes labels
-     vertex.label.dist=200,
-     vertex.label.color='black',
-     vertex.label.font=1,
-     vertex.label=V(g)$name,
-     vertex.label.cex=0.5
-)
-
-#########
-m<- restored25
-m1<-melt(as.matrix(m)) 
-m2 <- subset(m1, value>0) 
+m1<-melt(as.matrix(fragmentRJ)) 
+m2 <- subset(m1, value>0)
 
 g=graph.data.frame(m2,directed=FALSE) 
+E(g)$weight=as.numeric(m2[,3]) #We then add the edge weights to this network by assigning an edge attribute called 'weight'.
+#V(g)$name
+#V(g)$color[1:184] = "blue"
+#V(g)$color[185:265] = "orange"
 
-V(g)$name
-V(g)$color[1:23] = "green"
-V(g)$color[24:52] = "blue"
+V(g)$color <- ifelse(V(g)$name == str_match(V(g)$name, " "), "blue", "orange") #plants
+V(g)$color <- ifelse(is.na(V(g)$color), "blue","orange")
 
 plot(g,
      layout=layout.circle,
          vertex.size=6,
+     #main = '15',
          vertex.color = V(g)$color,
-               edge.color = "lightblue",
+               edge.color = "gray80",
                edge.curved=0.3,
      vertex.label.dist=200,
      vertex.label.color='black',
      vertex.label.font=1,
      vertex.label=V(g)$name,
-     vertex.label.cex=0.5
+     vertex.label.cex=0.5,
+     edge.width=E(g)$weight/4
 )
 ```
 
