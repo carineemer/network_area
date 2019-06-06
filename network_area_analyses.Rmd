@@ -36,12 +36,11 @@ library(ggplot2)
 library("cowplot")
 library(igraph)
 
-
-
+load("network_area.RData")
 
 ```
 
-```{r input data}
+```{r input data, include=FALSE}
 setwd("~/Dropbox/MS network area AF/Analyses/network_area/data")
 restoredPira<-read.csv("vivian quanti.csv",head=T,row.names=1)
 fragmentRC<-read.csv("w34 Athie RC.csv",head=T,row.names=1) 
@@ -89,27 +88,27 @@ Msig <- function (x, y)  {
     z <- (y - mean(like.nulls))/sd(like.nulls)
     p <- 2*pnorm(-abs(z))
 }
-z_mod1<-Msig(comm[[1]],mod[1])
-z_mod2<-Msig(comm[[2]],mod[2])
-z_mod3<-Msig(comm[[3]],mod[3])
-z_mod4<-Msig(comm[[4]],mod[4])
-z_mod5<-Msig(comm[[5]],mod[5])
-z_mod6<-Msig(comm[[6]],mod[6])
-z_mod7<-Msig(comm[[7]],mod[7])
-z_mod8<-Msig(comm[[8]],mod[8])
-z_mod9<-Msig(comm[[9]],mod[9])
-z_mod10<-Msig(comm[[10]],mod[10])
-z_mod11<-Msig(comm[[11]],mod[11])
-z_mod12<-Msig(comm[[12]],mod[12])
-z_mod13<-Msig(comm[[13]],mod[13])
-z_mod14<-Msig(comm[[14]],mod[14])
-z_mod15<-Msig(comm[[15]],mod[15])
-z_mod16<-Msig(comm[[16]],mod[16])
+z_mod1<-Msig(comm[[1]],mod[[1]]@likelihood)
+z_mod2<-Msig(comm[[2]],mod[[2]]@likelihood)
+z_mod3<-Msig(comm[[3]],mod[[3]]@likelihood)
+z_mod4<-Msig(comm[[4]],mod[[4]]@likelihood)
+z_mod5<-Msig(comm[[5]],mod[[5]]@likelihood)
+z_mod6<-Msig(comm[[6]],mod[[6]]@likelihood)
+z_mod7<-Msig(comm[[7]],mod[[7]]@likelihood)
+z_mod8<-Msig(comm[[8]],mod[[8]]@likelihood)
+z_mod9<-Msig(comm[[9]],mod[[9]]@likelihood)
+z_mod10<-Msig(comm[[10]],mod[[10]]@likelihood)
+z_mod11<-Msig(comm[[11]],mod[[11]]@likelihood)
+z_mod12<-Msig(comm[[12]],mod[[12]]@likelihood)
+z_mod13<-Msig(comm[[13]],mod[[13]]@likelihood)
+z_mod14<-Msig(comm[[14]],mod[[14]]@likelihood)
+z_mod15<-Msig(comm[[15]],mod[[15]]@likelihood)
+z_mod16<-Msig(comm[[16]],mod[[16]]@likelihood)
 
 z_mod<-c(z_mod1,z_mod2,z_mod3,z_mod4,z_mod5,z_mod6,z_mod7,z_mod8,z_mod9,z_mod10,z_mod11,z_mod12,z_mod13,z_mod14,z_mod15,z_mod16)
 data<-cbind(data,z_mod)
 
-plot(data$z_mod~data$area_ha)
+plot(log(data$z_mod)~data$area_ha)
 
 
 ```
@@ -382,8 +381,7 @@ MyMerge <- function(x, y){
 } 
 ##### if you wanna keep just the common variables (excluding NA, use: all.x= FALSE, all.y= FALSE
 
-nested<- Reduce(MyMerge, list(si, bo,cas, cor, ka, fad, ki, gp,pi, fe25,at,fe15,
-                              fe57,ra,ha,vi))
+nested<- Reduce(MyMerge, list(si, bo,cas, cor, ka, fad, ki, gp,pi, fe25,at,fe15,            fe57,ra,ha,vi))
 
 
 n1<-nested[,-1]
@@ -452,6 +450,8 @@ links<-sapply(comm, networklevel, index = "links per species")
 cor.test(mod_comm,links) 
 plot(links,data$area_ha)
 
+
+########## WNodf
 wnodf<-sapply(comm, networklevel, index = "weighted NODF")
 cor.test(mod_comm,h2_comm) 
 plot(wnodf,mod_comm)
@@ -464,6 +464,20 @@ cor(data$evenness,data$dirt_mod_quanti)
 
 
 ```
+
+```{r null model Nestedness}
+NODFsig <- function (x, y)  {
+    require(bipartite)
+    # mat is the input matrix for which M is tested
+    # mlike is the observed mean M value
+    nulls <- nullmodel(x, N=100, method=3) ## 2 = swapweb, connectance and marginal totals constant (ie, constrait degree for sites and interactions/spp)
+    modules.nulls <- sapply(nulls, networklevel, index = "weighted NODF")
+    like.nulls <- sapply(modules.nulls, function(x) x@likelihood)
+    z <- (y - mean(like.nulls))/sd(like.nulls)
+    p <- 2*pnorm(-abs(z))
+```
+
+
 
 ```{r correlations}
 
@@ -788,7 +802,7 @@ summary (m1best)
 
 ```
 
-```{r ggplot}
+```{r ggplot, include = FALSE}
 
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠ function to set a legend for multiple panels
 #library(gridExtra)
@@ -867,7 +881,7 @@ grid.arrange(sp1, sp2, sp3, legend,
 ```
 
 
-```{r plot bipartiteD3}
+```{r plot bipartiteD3, include = FALSE}
 
 test1<-melt(as.matrix(Intervales))
 test1 <- subset(test1, value>0)
@@ -888,7 +902,7 @@ bipartite_D3(webtest, PrimaryLab = 'Plants',
 ```
 
 
-```{r networks igraph}
+```{r networks igraph, include = FALSE}
 #################
 ##igraph
 m1<-melt(as.matrix(fragmentRJ)) 
