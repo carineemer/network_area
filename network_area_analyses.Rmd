@@ -66,54 +66,6 @@ save.image("network_area.RData")
 
 ```
 
-```{r modularity}
-comm<-list(Intervales,CBotelho,Cardoso,RebioPcAntas,IAnchieta,fragmentMG,
-           FAraucaria,StaGenebra,Itatiba,fragmentRC,restored57,
-           restored15,restored25,fragmentSP,restoredPira,fragmentRJ)
-mod<-sapply(comm,computeModules)
-mod[[1]]
-mod_comm<-c(mod[[1]]@likelihood,mod[[2]]@likelihood,mod[[3]]@likelihood,mod[[4]]@likelihood,mod[[5]]@likelihood,mod[[6]]@likelihood,mod[[7]]@likelihood,mod[[8]]@likelihood,mod[[9]]@likelihood,mod[[10]]@likelihood,mod[[11]]@likelihood,mod[[12]]@likelihood,mod[[13]]@likelihood,mod[[14]]@likelihood,mod[[15]]@likelihood,mod[[16]]@likelihood)
-
-data<-cbind(data,mod)
-
-#############
-
-Msig <- function (x, y)  {
-    require(bipartite)
-    # mat is the input matrix for which M is tested
-    # mlike is the observed mean M value
-    nulls <- nullmodel(x, N=100, method=3) ## 2 = swapweb, connectance and marginal totals constant (ie, constrait degree for sites and interactions/spp)
-    modules.nulls <- sapply(nulls, computeModules)
-    like.nulls <- sapply(modules.nulls, function(x) x@likelihood)
-    z <- (y - mean(like.nulls))/sd(like.nulls)
-    p <- 2*pnorm(-abs(z))
-}
-z_mod1<-Msig(comm[[1]],mod[[1]]@likelihood)
-z_mod2<-Msig(comm[[2]],mod[[2]]@likelihood)
-z_mod3<-Msig(comm[[3]],mod[[3]]@likelihood)
-z_mod4<-Msig(comm[[4]],mod[[4]]@likelihood)
-z_mod5<-Msig(comm[[5]],mod[[5]]@likelihood)
-z_mod6<-Msig(comm[[6]],mod[[6]]@likelihood)
-z_mod7<-Msig(comm[[7]],mod[[7]]@likelihood)
-z_mod8<-Msig(comm[[8]],mod[[8]]@likelihood)
-z_mod9<-Msig(comm[[9]],mod[[9]]@likelihood)
-z_mod10<-Msig(comm[[10]],mod[[10]]@likelihood)
-z_mod11<-Msig(comm[[11]],mod[[11]]@likelihood)
-z_mod12<-Msig(comm[[12]],mod[[12]]@likelihood)
-z_mod13<-Msig(comm[[13]],mod[[13]]@likelihood)
-z_mod14<-Msig(comm[[14]],mod[[14]]@likelihood)
-z_mod15<-Msig(comm[[15]],mod[[15]]@likelihood)
-z_mod16<-Msig(comm[[16]],mod[[16]]@likelihood)
-
-z_mod<-c(z_mod1,z_mod2,z_mod3,z_mod4,z_mod5,z_mod6,z_mod7,z_mod8,z_mod9,z_mod10,z_mod11,z_mod12,z_mod13,z_mod14,z_mod15,z_mod16)
-data<-cbind(data,z_mod)
-
-plot(log(data$z_mod)~data$area_ha)
-
-
-```
-
-
 ```{r edgelist}
 ### can use 'melt' but has to be matrices
 str(comm1)
@@ -429,27 +381,132 @@ hist(log(dist$N), xlab = "Number of seed-disperal events (log)", main = "")
 
 ```
 
+```{r modularity}
+comm<-list(Intervales,CBotelho,Cardoso,RebioPcAntas,IAnchieta,fragmentMG,
+           FAraucaria,StaGenebra,Itatiba,fragmentRC,restored57,
+           restored15,restored25,fragmentSP,restoredPira,fragmentRJ)
+mod<-sapply(comm,computeModules)
+mod[[1]]
+mod_comm<-c(mod[[1]]@likelihood,mod[[2]]@likelihood,mod[[3]]@likelihood,mod[[4]]@likelihood,mod[[5]]@likelihood,mod[[6]]@likelihood,mod[[7]]@likelihood,mod[[8]]@likelihood,mod[[9]]@likelihood,mod[[10]]@likelihood,mod[[11]]@likelihood,mod[[12]]@likelihood,mod[[13]]@likelihood,mod[[14]]@likelihood,mod[[15]]@likelihood,mod[[16]]@likelihood)
+
+data<-cbind(data,mod)
+
+#############
+
+Msig <- function (x, y)  {
+    require(bipartite)
+    # mat is the input matrix for which M is tested
+    # mlike is the observed mean M value
+    nulls <- nullmodel(x, N=100, method=3) ## 2 = swapweb, connectance and marginal totals constant (ie, constrait degree for sites and interactions/spp)
+    modules.nulls <- sapply(nulls, computeModules)
+    like.nulls <- sapply(modules.nulls, function(x) x@likelihood)
+    z <- (y - mean(like.nulls))/sd(like.nulls)
+    p <- 2*pnorm(-abs(z))
+}
+z_mod1<-Msig(comm[[1]],mod[[1]]@likelihood)
+z_mod2<-Msig(comm[[2]],mod[[2]]@likelihood)
+z_mod3<-Msig(comm[[3]],mod[[3]]@likelihood)
+z_mod4<-Msig(comm[[4]],mod[[4]]@likelihood)
+z_mod5<-Msig(comm[[5]],mod[[5]]@likelihood)
+z_mod6<-Msig(comm[[6]],mod[[6]]@likelihood)
+z_mod7<-Msig(comm[[7]],mod[[7]]@likelihood)
+z_mod8<-Msig(comm[[8]],mod[[8]]@likelihood)
+z_mod9<-Msig(comm[[9]],mod[[9]]@likelihood)
+z_mod10<-Msig(comm[[10]],mod[[10]]@likelihood)
+z_mod11<-Msig(comm[[11]],mod[[11]]@likelihood)
+z_mod12<-Msig(comm[[12]],mod[[12]]@likelihood)
+z_mod13<-Msig(comm[[13]],mod[[13]]@likelihood)
+z_mod14<-Msig(comm[[14]],mod[[14]]@likelihood)
+z_mod15<-Msig(comm[[15]],mod[[15]]@likelihood)
+z_mod16<-Msig(comm[[16]],mod[[16]]@likelihood)
+
+z_mod<-c(z_mod1,z_mod2,z_mod3,z_mod4,z_mod5,z_mod6,z_mod7,z_mod8,z_mod9,z_mod10,z_mod11,z_mod12,z_mod13,z_mod14,z_mod15,z_mod16)
+data<-cbind(data,z_mod)
+
+plot(log(data$z_mod)~log(data$area_ha)) 
+
+############## Spatial structure
+## first, REML to compare fixed terms
+m1<-gls(z_mod ~ intensity+logarea+forest.type, data=data)# 
+#m2<-gls(wnodf ~ logsize+logarea+forest.type, data=data,method="REML")
+
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1b best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(z_mod~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+summary(get.models(dd,2)[[1]])
+
+## finally, refit best models with REML for final results
+m1best<-gls(z_mod ~ intensity, data=data)
+summary (m1best)
+
+m2best<-gls(z_mod ~ intensity +logarea, data=data)
+summary (m2best)
 
 
-```{r metrics}
-#### connectance, wnodf, modularity, 
-#H2 is correlated with modularity
 
 
-plot(log(data$linkdens))
-loglinkdens<-log(data$linkdens)
+#####
+#<- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(mod_comm ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
 
-c_comm<-sapply(comm,networklevel, index = "connectance")
-h2_comm<-sapply(comm,networklevel, index = "H2")
-cor.test(c_comm,h2_comm) # 0.14
 
-wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
-cor.test(wc_comm,c_comm) # 0.80
 
-links<-sapply(comm, networklevel, index = "links per species")
-cor.test(mod_comm,links) 
-plot(links,data$area_ha)
+############## Spatial structure
 
+## first, REML to compare fixed terms
+m1<-gls(z_mod ~ intensity+logarea+forest.type, data=data,method="REML")# 
+#m2<-gls(wnodf ~ logsize+logarea+forest.type, data=data,method="REML")
+
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(z_mod~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+summary(get.models(dd,2)[[1]])
+
+## finally, refit best models with REML for final results
+m1best<-m1<-gls(z_mod ~ intensity+logarea, data=data, method="REML")
+summary (m1best)
+
+
+
+```
+
+```{r Nestedness}
 
 ########## WNodf
 wnodf<-sapply(comm, networklevel, index = "weighted NODF")
@@ -462,19 +519,170 @@ cor(data$evenness,data$h2)
 cor(data$evenness,data$wnodf)
 cor(data$evenness,data$dirt_mod_quanti)
 
+############## Spatial structure
+hist(data$z_wnodf)
+## 
+m1<-gls(z_wnodf ~ intensity+logarea+forest.type, data=data)
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(z_wnodf~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+summary(get.models(dd,2)[[1]])
+
+## finally, refit best models with REML for final results
+m1best<-lm(z_wnodf ~ intensity, data=data)#, method="REML")
+summary (m1best)
+
+#-------------------------------- function null model
+NODFsig <- function (x, y)  {
+    require(bipartite)
+    # x is the input matrix for which wNODF is tested
+    # obs is the observed wNODF value
+    obs<-networklevel(x, index = "weighted NODF")
+    nulls <- nullmodel(x, N=100, method=3) 
+    wnodf.nulls <- sapply(nulls, networklevel, index = "weighted NODF")
+    z <- (obs - mean(wnodf.nulls))/sd(wnodf.nulls)
+    #p <- 2*pnorm(-abs(z))
+}    
+
+
+z_wnodf1<-NODFsig(comm[[1]])
+z_wnodf2<-NODFsig(comm[[2]])
+z_wnodf3<-NODFsig(comm[[3]])
+z_wnodf4<-NODFsig(comm[[4]])
+z_wnodf5<-NODFsig(comm[[5]])
+z_wnodf6<-NODFsig(comm[[6]])
+z_wnodf7<-NODFsig(comm[[7]])
+z_wnodf8<-NODFsig(comm[[8]])
+z_wnodf9<-NODFsig(comm[[9]])
+z_wnodf10<-NODFsig(comm[[10]])
+z_wnodf11<-NODFsig(comm[[11]])
+z_wnodf12<-NODFsig(comm[[12]])
+z_wnodf13<-NODFsig(comm[[13]])
+z_wnodf14<-NODFsig(comm[[14]])
+z_wnodf15<-NODFsig(comm[[15]])
+z_wnodf16<-NODFsig(comm[[16]])
+
+
+z_wnodf<-c(z_wnodf1,z_wnodf2,z_wnodf3,z_wnodf4,z_wnodf5,z_wnodf6,z_wnodf7,z_wnodf8,z_wnodf9,z_wnodf10,z_wnodf11,z_wnodf12,z_wnodf13,z_wnodf14,z_wnodf15,z_wnodf16)
+data<-cbind(data,z_wnodf)
+plot((data$z_wnodf)~log(data$area_ha))
+
+
+##### <- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(wnodf ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
+  
+  
+
+m1_avmod <- model.avg(mset1)
+summary(m1_avmod)
+
+
+
+
 
 ```
 
-```{r null model Nestedness}
-NODFsig <- function (x, y)  {
+
+```{r metrics}
+#### connectance, wnodf, modularity, 
+#H2 is correlated with modularity
+
+
+plot(log(data$linkdens))
+loglinkdens<-log(data$linkdens)
+
+c_comm<-sapply(comm,networklevel, index = "connectance")
+
+
+
+
+
+wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
+cor.test(wc_comm,c_comm) # 0.80
+cor.test(wc_comm,h2_comm) # -0.001
+
+links<-sapply(comm, networklevel, index = "links per species")
+cor.test(mod_comm,links) 
+cor.test(h2_comm, links) # 0.43
+plot(links,data$area_ha)
+
+
+```
+
+
+```{r h2}
+
+h2_comm<-sapply(comm,networklevel, index = "H2")
+cor.test(c_comm,h2_comm) # 0.12
+cor.test(mod_comm,h2_comm) ## 0.80
+
+
+plot(log(data$area_ha), h2_comm)
+plot(mod_comm, h2_comm, xlab = "Modularity", ylab = "H'2", main= "cor = 0.80")
+
+H2sig <- function (x, y)  {
     require(bipartite)
-    # mat is the input matrix for which M is tested
-    # mlike is the observed mean M value
-    nulls <- nullmodel(x, N=100, method=3) ## 2 = swapweb, connectance and marginal totals constant (ie, constrait degree for sites and interactions/spp)
-    modules.nulls <- sapply(nulls, networklevel, index = "weighted NODF")
-    like.nulls <- sapply(modules.nulls, function(x) x@likelihood)
-    z <- (y - mean(like.nulls))/sd(like.nulls)
-    p <- 2*pnorm(-abs(z))
+    # x is the input matrix for which H2 is tested
+    # obs is the observed H2 value
+    obs<-networklevel(x, index = "H2")
+    nulls <- nullmodel(x, N=100, method=3) 
+    h2.nulls <- sapply(nulls, networklevel, index = "H2")
+    z <- (obs - mean(h2.nulls))/sd(h2.nulls)
+    #p <- 2*pnorm(-abs(z))
+}    
+
+z_h2_1<-H2sig(comm[[1]])
+z_h2_2<-H2sig(comm[[2]])
+z_h2_3<-H2sig(comm[[3]])
+z_h2_4<-H2sig(comm[[4]])
+z_h2_5<-H2sig(comm[[5]])
+z_h2_6<-H2sig(comm[[6]])
+z_h2_7<-H2sig(comm[[7]])
+z_h2_8<-H2sig(comm[[8]])
+z_h2_9<-H2sig(comm[[9]])
+z_h2_10<-H2sig(comm[[10]])
+z_h2_11<-H2sig(comm[[11]])
+z_h2_12<-H2sig(comm[[12]])
+z_h2_13<-H2sig(comm[[13]])
+z_h2_14<-H2sig(comm[[14]])
+z_h2_15<-H2sig(comm[[15]])
+z_h2_16<-H2sig(comm[[16]])
+
+
+z_h2<-c(z_h2_1,z_h2_2,z_h2_3,z_h2_4,z_h2_5,z_h2_6,z_h2_7,z_h2_8,z_h2_9,z_h2_10,z_h2_11,z_h2_12,z_h2_13,z_h2_14,z_h2_15,z_h2_16)
+data<-cbind(data,z_h2)
+
+plot((data$z_h2)~logarea)
+
+
+
+
+
 ```
 
 
@@ -490,7 +698,7 @@ cor(data$area,data$def)
 plot(data$def~logarea)
 
 cor(logsize,logarea)
-cor(logsize,data$c)
+cor(logsize,data$c) # 0.47
 cor(logsize,data$dirt_mod_quanti) ## only one not correlated
 cor(logsize,data$wnodf)
 cor(logsize,data$h2)
@@ -501,16 +709,17 @@ cor(logsize,logarea) #0.69
 cor(logsize,data$dirt_mod_quanti)
 cor(logsize,data$c)
 cor(logsize,data$wnodf)
-cor(data$dirt_mod_quanti,data$h2)
+cor(data$dirt_mod_quanti,(data$h2))
 
+data1<-data[,c(14, 17, 21, 22,23,25)]
+data2<-cbind(data1,logsize)
+#data2<-cbind(data2,logarea)
 
-data1<-data[,c(14,19,21,23,25)]
-data2<-cbind(data1,logarea)
-data2<-cbind(data2,logsize)
+pairs(data2, pch = 1)
+data[13]
 
-pairs(data2, pch = 19)
-
-
+plot(log(data$size))
+plot(logarea,data$c)
 ```
 
 
@@ -525,6 +734,9 @@ data$chao
 ```
 
 ```{r models}
+### model selection follows the protocol in Zuur et al. p 90, p.127, p.169
+
+
 ####logs= log size of the network and logarea = log(area)
 plot((data$size))
 logsize<-log(data$size) ## better fit
@@ -539,9 +751,10 @@ plot(logarea) # better fit
 hist(data$n.animals)
 hist(log(data$n.animals))
 animals<-log(data$n.animals)
-## first, REML to compare fixed terms and variable random or correlation structure -Zuur p 90 e 169
-m1<-gls(animals ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m2<-gls(plants ~ logs+def2Jac*logarea, data=data,method="REML")
+## first, fit gls to test for spatial autocorrelation, Zuur p 169.
+m1<-gls(animals ~ intensity+logarea+forest.type, data=data)# 
+plot(m1)
+
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -549,33 +762,51 @@ m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model with lower AICc value
 
 ### second, fit ML for best model selection Zuur, pg 90
 m1<-gls(animals~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(animals~logarea, data=data, method="REML")
-summary (m1best)
-
-m2best<-gls(animals~intensity+logarea, data=data, method="REML")
+m2best<-lm(animals~intensity+logarea, data=data)#, method="REML")
 summary (m2best)
+
+#library(msm)
+#drop1(m2best, test= "Chisq")
+
+
+  ##### model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(animals ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
+
+m1_avmod <- model.avg(mset1)
+summary(m1_avmod)
+
 
 ###############plants##########################
 #plants
 hist(data$n.plants)
 hist(log(data$n.plants))
 plants<-log(data$n.plants)
-## first, REML to compare fixed terms
 
-m1<-gls(plants ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m1<-gls(plants ~ logs+logarea+forest.type, data=data,method="REML")
-
-#AIC(m1,m2)
+m1<-gls(plants ~ intensity+logarea+forest.type, data=data)
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -583,19 +814,43 @@ m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(plants~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(plants~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(plants ~ logarea, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-lm(plants ~ logarea + intensity, data=data)
 summary (m1best)
+
+drop1(m1best, test= "Chisq")
+
+
+ ##### <- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(plants ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
+
+m1_avmod <- model.avg(mset1)
+summary(m1_avmod)
+
 
 ##############interactions###########################
 hist(data$n.interactions)
@@ -603,8 +858,8 @@ hist(log(data$n.interactions))
 interactions<-log(data$n.interactions)
 
 ## first, REML to compare fixed terms
-m1<-gls(interactions ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m1<-gls(interactions ~ logsize+logarea+forest.type, data=data,method="REML")
+m1<-gls(interactions ~ intensity+logarea+forest.type, data=data)# 
+
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -612,19 +867,43 @@ m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
 m1<-gls(interactions~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(interactions ~ logarea+intensity, data=data, method="REML")
+m1best<-lm(interactions ~ logarea+intensity, data=data)#, method="REML")
 summary (m1best)
+
+drop1(m1best, test = "Chisq")
+
+##### <- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(n.interactions ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
+
+m1_avmod <- model.avg(mset1)
+summary(m1_avmod)
+
+
 
 
 ##############connectance###########################
@@ -661,9 +940,9 @@ summary (m1best)
 
 ##############modularity###########################
 hist(data$dirt_mod_quanti)
+hist(z_mod)
 ## first, REML to compare fixed terms
-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize+logarea+forest.type, data=data,method="REML")
+m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ intensity+logarea+forest.type, data=data)# 
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -671,45 +950,65 @@ m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+#### use AICc for small sample sizes
+AICc(m1,m1a,m1c,m1d,m1e)
+
 
 ### second, fit ML for best model selection Zuur, pg 90
 m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ logsize, data=data, method="REML")
+m1best<-lm(log(dirt_mod_quanti+0.2216441)/(1-dirt_mod_quanti+0.2216441) ~ intensity, data=data)
 summary (m1best)
 
-##############Nestedness###########################
-hist(data$wnodf)
-## first, REML to compare fixed terms
-m1<-gls(wnodf ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m2<-gls(wnodf ~ logsize+logarea+forest.type, data=data,method="REML")
+##### ----------------- Modularity with z-scores
+m1<-gls(z_mod ~ intensity+logarea+forest.type, data=data,method="REML")
 
+### testing for spatial correlation
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
 m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+AICc(m1,m1a,m1c,m1d,m1e)
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(wnodf~ intensity+logarea+forest.type, data=data, method="ML")
+m1<-gls(z_mod~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+##### fit model
+mod1 <- lm(z_mod~ intensity+logarea+forest.type, data=data, na.action = "na.fail")
+##### create model set with sampling intensity kept fixed
+dd<-dredge(mod1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
-## finally, refit best models with REML for final results
-m1best<-m1<-gls(wnodf ~ intensity+logarea, data=data, method="REML")
-summary (m1best)
+#-----------------------------------------------------------------------------------
+#### following Reviewer 2 Biotropica
+##### fit model
+mod1 <- lm(z_mod ~ intensity+logarea+forest.type,
+           data = data, na.action = "na.fail")
+##### create model set with sampling intensity kept fixed
+mset1 <- dredge(mod1, fixed = "intensity")
+##### extract parameter names from model matrix
+pars1 <- colnames(model.matrix(mod1))
+##### extract full model-averaged parameters
+coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+##### extract model-averaged confidence intervals
+ciM1 <- confint(model.avg(mset1))[pars1, ]
+##### create table with model-averaged parameter estimates and CIs
+(mtab1 <- cbind(coefM1, ciM1))
+##### extract variable importance
+importance(mset1)
+
+
+
 
 
 
@@ -747,10 +1046,7 @@ summary (m1best)
 ############## evenness ##########################
 
 ## first, REML to compare fixed term
-m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ intensity+logarea+forest.type, data=data,method="REML")# 
-#m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logsize+logarea+forest.type, data=data,method="REML")
-#m3<-gls(c ~ logsize+res1+forest.type, data=data,method="REML")
-
+m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ intensity+logarea+forest.type, data=data)# 
 
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
@@ -758,22 +1054,50 @@ m1c<-update(m1,correlation=corRatio(form=~x+y))
 m1d<-update(m1,correlation=corGaus(form=~x+y))
 m1e<-update(m1,correlation=corExp(form=~x+y))
 
-AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
 m1<-gls(log(evenness+0.5514)/(1-evenness+0.5514)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1)#, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
+
 ## finally, refit best models with REML for final results
-m1best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ 1, data=data, method="REML")
+m1best<-lm(log(evenness+0.5514)/(1-evenness+0.5514) ~ intensity, data=data)
 summary (m1best)
 
-m2best<-gls(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea, data=data, method="REML")
+m2best<-lm(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea + intensity, data=data)
 summary (m2best)
+
+#####
+#- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+  ##### fit model
+  mod1 <- lm(log(evenness+0.5514)/(1-evenness+0.5514) ~ logarea + forest.type + intensity,
+             data = data, na.action = "na.fail")
+  ##### create model set with sampling intensity kept fixed
+  mset1 <- dredge(mod1, fixed = "intensity")
+  ##### extract parameter names from model matrix
+  pars1 <- colnames(model.matrix(mod1))
+  ##### extract full model-averaged parameters
+  coefM1 <- model.avg(mset1)$coefficients[1, pars1]
+  ##### extract model-averaged confidence intervals
+  ciM1 <- confint(model.avg(mset1))[pars1, ]
+  ##### create table with model-averaged parameter estimates and CIs
+  (mtab1 <- cbind(coefM1, ciM1))
+  ##### extract variable importance
+  importance(mset1)
+  
+
+m1_avmod <- model.avg(mset1)
+summary(m1_avmod)
+
+
+
+
+
 
 
 ############# links per species ##########################
