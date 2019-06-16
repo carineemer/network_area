@@ -1238,8 +1238,8 @@ E(g)$weight=as.numeric(m2[,3]) #We then add the edge weights to this network by 
 #V(g)$color[1:184] = "blue"
 #V(g)$color[185:265] = "orange"
 
-V(g)$color <- ifelse(V(g)$name == str_match(V(g)$name, " "), "blue", "orange") #plants
-V(g)$color <- ifelse(is.na(V(g)$color), "blue","orange")
+V(g)$color <- ifelse(V(g)$name == str_match(V(g)$name, " "), "orange", "blue") #plants
+V(g)$color <- ifelse(is.na(V(g)$color), "orange", "blue")
 
 plot(g,
      layout=layout.circle,
