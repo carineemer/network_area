@@ -36,7 +36,7 @@ library(ggplot2)
 library("cowplot")
 library(igraph)
 
-load("network_area.RData")
+#load("network_area.RData")
 
 ```
 
@@ -60,9 +60,6 @@ CBotelho<-read.csv("w95 Botelho.csv",head=T,row.names=1)
 fragmentRJ<-read.csv("w93 Rafael UFRJ.csv",head=T,row.names=1)
 
 data<-read.csv("final_results_communities.csv", header=T) # original = CArdoso and Anchieta without added data on E. edulis, Clusia and Cryptocharia, removed all Psittacidae
-
-save.image("network_area.RData")
-
 
 ```
 
@@ -608,27 +605,14 @@ summary(m1_avmod)
 ```
 
 
-```{r metrics}
+```{r links per species}
 #### connectance, wnodf, modularity, 
 #H2 is correlated with modularity
 
-
-plot(log(data$linkdens))
-loglinkdens<-log(data$linkdens)
-
-c_comm<-sapply(comm,networklevel, index = "connectance")
-
-
-
-
-
-wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
-cor.test(wc_comm,c_comm) # 0.80
-cor.test(wc_comm,h2_comm) # -0.001
+#c_comm<-sapply(comm,networklevel, index = "connectance")
+#wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
 
 links<-sapply(comm, networklevel, index = "links per species")
-cor.test(mod_comm,links) 
-cor.test(h2_comm, links) # 0.43
 plot(links,data$area_ha)
 
 
@@ -638,9 +622,8 @@ plot(links,data$area_ha)
 ```{r h2}
 
 h2_comm<-sapply(comm,networklevel, index = "H2")
-cor.test(c_comm,h2_comm) # 0.12
-cor.test(mod_comm,h2_comm) ## 0.80
-
+h2_comm
+cor(h2_comm, links)
 
 plot(log(data$area_ha), h2_comm)
 plot(mod_comm, h2_comm, xlab = "Modularity", ylab = "H'2", main= "cor = 0.80")
@@ -1019,8 +1002,6 @@ hist(data$h2)
 m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ intensity+logarea+forest.type, data=data,method="REML")# 
 #m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ logsize+logarea+forest.type, data=data,method="REML")
 
-AIC(m1,m2)
-
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
 m1c<-update(m1,correlation=corRatio(form=~x+y))
@@ -1030,17 +1011,18 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(log(h2+0.0673)/(1-h2+0.0673)~ intensity+logarea+forest.type, data=data, method="ML", correlation=corSpher(form=~x+y))
+m1<-gls(log(h2+0.0673)/(1-h2+0.0673)~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-m1<-gls(log(h2+0.0673)/(1-h2+0.0673) ~ 1, data=data, method="REML",correlation=corSpher(form=~x+y))
+m1best<-lm(log(h2+0.0673)/(1-h2+0.0673) ~ intensity, data=data)
 summary (m1best)
-
+m2best<-lm(log(h2+0.0673)/(1-h2+0.0673) ~ logarea+intensity, data=data)
+summary (m2best)
 
 
 ############## evenness ##########################
@@ -1116,12 +1098,12 @@ AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 ### second, fit ML for best model selection Zuur, pg 90
 m1<-gls(links~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
-dd<-dredge(m1)
+dd<-dredge(m1, fixed = "intensity")
 print(dd)
 summary(get.models(dd,1)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-gls(links ~ logarea, data=data, method="REML")
+m1best<-lm(links ~ logarea+intensity, data=data)
 summary (m1best)
 
 ```
@@ -1129,13 +1111,13 @@ summary (m1best)
 ```{r ggplot, include = FALSE}
 
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠ function to set a legend for multiple panels
-#library(gridExtra)
-#get_legend<-function(myggplot){
-  #tmp <- ggplot_gtable(ggplot_build(myggplot))
-  #leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  #legend <- tmp$grobs[[leg]]
-  #return(legend)
-#}
+library(gridExtra)
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠ 
 # 1. Create the plots
 #++++++++++++++++++++++++++++++++++
@@ -1148,9 +1130,9 @@ summary (m1best)
 # 4. Arrange ggplot2 graphs with a specific width
 
 ### defaunation index used in Science paper
-def<-c(0.557,0.615,0.626,0.926,0.958,0.838,0.96,0.837,0.897,0.963,0.986,
-       0.971,0.95,0.952,0.956,0.971)
-data<-cbind(data,def)
+#def<-c(0.557,0.615,0.626,0.926,0.958,0.838,0.96,0.837,0.897,0.963,0.986,
+  #     0.971,0.95,0.952,0.956,0.971)
+#data<-cbind(data,def)
 #1. Scatter plots
 sp1 <- ggplot(data, aes(x = logarea, y = (n.animals), size = 4, fill=def)) +
              geom_point(shape = 21) +
@@ -1164,32 +1146,37 @@ sp2 <- ggplot(data, aes(x = logarea, y = log(n.plants), size = 4, fill = def)) +
              labs(x = "", y = "N plant species (log)")
 sp2<-sp2 + scale_fill_continuous(low = "#56B1F7", high = "#132B43") +
            theme(legend.position ="none")
+sp2
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠
-sp3 <- ggplot(data, aes(x = logarea, y = n.interactions, fill = Defaunation)) +
+sp3 <- ggplot(data, aes(x = logarea, y = n.interactions, fill = def)) +
              geom_point(shape = 21, size = 4) +
-             labs(x = "", y = "N interactions") +
-             theme(legend.position ="none")
+             labs(x = "", y = "N interactions")
+             #theme(legend.position ="none")
  
 sp3<-sp3 + scale_fill_continuous(low = "#56B1F7", high = "#132B43")
-
+sp3
 # 2. Save the legend
 #+++++++++++++++++++++++
-#legend <- get_legend(sp3)
+legend <- get_legend(sp3) ### here is the tricky to get the legend in the right place in the multiple panel: get it from the graph, create an object, then remove if from the original graph
+sp3 <- sp3 + theme(legend.position="none")
 
-eve<-data$evenness+0.5514/(1-data$evenness+0.5514)
+#eve<-data$evenness+0.5514/(1-data$evenness+0.5514)
+
 #1. Scatter plots
-sp4 <- ggplot(data, aes(x = logarea, y =eve, size = 4, fill = def)) +
+sp4 <- ggplot(data, aes(x = logarea, y =links, size = 4, fill = def)) +
              geom_point(shape = 21) +
-             labs(x = "", y = "Evenness (logit-transf)")
+             labs(x = "", y = "N links per species")
 sp4<-sp4 + scale_fill_continuous(low = "#56B1F7", high = "#132B43") +
             theme(legend.position="none")
+sp4
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠
-mod<-log(data$dirt_mod_quanti+0.2216441)/(1-data$dirt_mod_quanti+0.2216441)
-sp5 <- ggplot(data, aes(x = logarea, y = mod, size = 4, fill = def)) +
+h2<-log(data$h2+0.0673)/(1-data$h2+0.0673)
+sp5 <- ggplot(data, aes(x = logarea, y = h2, size = 4, fill = def)) +
              geom_point(shape = 21) +
-             labs(x = "Fragment area (log[ha])", y = "Modularity (logit-transf)")
+             labs(x = "Fragment area (log[ha])", y = "H2'specialization")
 sp5<-sp5 + scale_fill_continuous(low = "#56B1F7", high = "#132B43") +
           theme(legend.position ="none")
+sp5
 ## ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠
 sp6 <- ggplot(data, aes(x = logarea, y = wnodf, size = 4, fill = def)) +
              geom_point(shape = 21) +
@@ -1197,7 +1184,7 @@ sp6 <- ggplot(data, aes(x = logarea, y = wnodf, size = 4, fill = def)) +
    theme(legend.position ="none")
  
 sp6<-sp6 + scale_fill_continuous(low = "#56B1F7", high = "#132B43")
-
+sp6
 #4 ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠
 grid.arrange(sp1, sp2, sp3, legend,
              sp4, sp5, sp6, ncol=4, nrow=2,
@@ -1255,5 +1242,9 @@ plot(g,
      vertex.label.cex=0.5,
      edge.width=E(g)$weight/4
 )
+```
+
+```{r save RData}
+save.image("network_area.RData")
 ```
 
