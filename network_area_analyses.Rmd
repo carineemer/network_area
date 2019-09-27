@@ -382,6 +382,12 @@ hist(log(dist$N), xlab = "Number of seed-disperal events (log)", main = "")
 comm<-list(Intervales,CBotelho,Cardoso,RebioPcAntas,IAnchieta,fragmentMG,
            FAraucaria,StaGenebra,Itatiba,fragmentRC,restored57,
            restored15,restored25,fragmentSP,restoredPira,fragmentRJ)
+names_comm<- c("Intervales","CBotelho","Cardoso","RebioPcAntas","IAnchieta","fragmentMG",
+           "FAraucaria","StaGenebra","Itatiba","fragmentRC","restored57",
+           "restored15","restored25","fragmentSP","restoredPira","fragmentRJ")
+
+names(comm) <- names_comm
+
 mod<-sapply(comm,computeModules)
 mod[[1]]
 mod_comm<-c(mod[[1]]@likelihood,mod[[2]]@likelihood,mod[[3]]@likelihood,mod[[4]]@likelihood,mod[[5]]@likelihood,mod[[6]]@likelihood,mod[[7]]@likelihood,mod[[8]]@likelihood,mod[[9]]@likelihood,mod[[10]]@likelihood,mod[[11]]@likelihood,mod[[12]]@likelihood,mod[[13]]@likelihood,mod[[14]]@likelihood,mod[[15]]@likelihood,mod[[16]]@likelihood)
@@ -503,13 +509,13 @@ summary (m1best)
 
 ```
 
-```{r Nestedness}
+```{r Nestedness null model}
 
 ########## WNodf
 wnodf<-sapply(comm, networklevel, index = "weighted NODF")
 cor.test(mod_comm,h2_comm) 
 plot(wnodf,mod_comm)
-plot(wnodf,h2_comm)
+cor(wnodf,h2_comm)
 
 plot(data$evenness~logarea)
 cor(data$evenness,data$h2)
@@ -519,7 +525,7 @@ cor(data$evenness,data$dirt_mod_quanti)
 ############## Spatial structure
 hist(data$z_wnodf)
 ## 
-m1<-gls(z_wnodf ~ intensity+logarea+forest.type, data=data)
+m1<-gls(z_wnodf_3 ~ intensity+logarea+forest.type, data=data)
 m1a<-update(m1,correlation=corSpher(form=~x+y))
 m1b<-update(m1,correlation=corLin(form=~x+y))
 m1c<-update(m1,correlation=corRatio(form=~x+y))
@@ -529,7 +535,7 @@ m1e<-update(m1,correlation=corExp(form=~x+y))
 AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
 
 ### second, fit ML for best model selection Zuur, pg 90
-m1<-gls(z_wnodf~ intensity+logarea+forest.type, data=data, method="ML")
+m1<-gls(z_wnodf_3~ intensity+logarea+forest.type, data=data, method="ML")
 summary(m1)
 dd<-dredge(m1, fixed = "intensity")
 print(dd)
@@ -537,7 +543,7 @@ summary(get.models(dd,1)[[1]])
 summary(get.models(dd,2)[[1]])
 
 ## finally, refit best models with REML for final results
-m1best<-lm(z_wnodf ~ intensity, data=data)#, method="REML")
+m1best<-lm(z_wnodf_1 ~ intensity, data=data)#, method="REML")
 summary (m1best)
 
 #-------------------------------- function null model
@@ -571,12 +577,13 @@ z_wnodf15<-NODFsig(comm[[15]])
 z_wnodf16<-NODFsig(comm[[16]])
 
 
-z_wnodf<-c(z_wnodf1,z_wnodf2,z_wnodf3,z_wnodf4,z_wnodf5,z_wnodf6,z_wnodf7,z_wnodf8,z_wnodf9,z_wnodf10,z_wnodf11,z_wnodf12,z_wnodf13,z_wnodf14,z_wnodf15,z_wnodf16)
-data<-cbind(data,z_wnodf)
-plot((data$z_wnodf)~log(data$area_ha))
+z_wnodf_3<-c(z_wnodf1,z_wnodf2,z_wnodf3,z_wnodf4,z_wnodf5,z_wnodf6,z_wnodf7,z_wnodf8,z_wnodf9,z_wnodf10,z_wnodf11,z_wnodf12,z_wnodf13,z_wnodf14,z_wnodf15,z_wnodf16)
+data<-cbind(data,z_wnodf_3)
+plot((data$z_wnodf_3)~log(data$area_ha))
+cor(z_wnodf_3,z_wnodf_1)
 
-
-##### <- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
+#####
+#<- <- <- <- <- <- <- <- <- <- <- <-  model suggested Rev 2
   ##### fit model
   mod1 <- lm(wnodf ~ logarea + forest.type + intensity,
              data = data, na.action = "na.fail")
@@ -605,16 +612,160 @@ summary(m1_avmod)
 ```
 
 
+```{r h2 null model}
+
+
+#-------------------------------- function null model
+H2sig <- function (x, y)  {
+    require(bipartite)
+    # x is the input matrix for which wNODF is tested
+    # obs is the observed wNODF value
+    obs<-networklevel(x, index = "H2")
+    nulls <- nullmodel(x, N=100, method=1) 
+    h2.nulls <- sapply(nulls, networklevel, index = "H2")
+    z <- (obs - mean(h2.nulls))/sd(h2.nulls)
+    #p <- 2*pnorm(-abs(z))
+}    
+
+
+z_h2_1<-H2sig(comm[[1]])
+z_h2_2<-H2sig(comm[[2]])
+z_h2_3<-H2sig(comm[[3]])
+z_h2_4<-H2sig(comm[[4]])
+z_h2_5<-H2sig(comm[[5]])
+z_h2_6<-H2sig(comm[[6]])
+z_h2_7<-H2sig(comm[[7]])
+z_h2_8<-H2sig(comm[[8]])
+z_h2_9<-H2sig(comm[[9]])
+z_h2_10<-H2sig(comm[[10]])
+z_h2_11<-H2sig(comm[[11]])
+z_h2_12<-H2sig(comm[[12]])
+z_h2_13<-H2sig(comm[[13]])
+z_h2_14<-H2sig(comm[[14]])
+z_h2_15<-H2sig(comm[[15]])
+z_h2_16<-H2sig(comm[[16]])
+
+
+z1_h2<-c(z_h2_1,z_h2_2,z_h2_3,z_h2_4,z_h2_5,z_h2_6,z_h2_7,z_h2_8,z_h2_9,z_h2_10,z_h2_11,z_h2_12,z_h2_13,z_h2_14,z_h2_15,z_h2_16)
+data<-cbind(data,z1_h2)
+plot((data$z_h2)~log(data$area_ha))
+cor(z_h2,z1_h2)
+
+
+########## H2
+h2
+
+############## Spatial structure
+hist(data$z_h2)
+## 
+m1<-gls(z1_h2 ~ intensity+logarea+forest.type, data=data)
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(z1_h2~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+summary(get.models(dd,2)[[1]])
+
+## finally, refit best models with REML for final results
+m1_z1_h2<-lm(z1_h2~ intensity, data=data)#, method="REML")
+summary (m1_z1_h2)
+
+```
+
+
+
 ```{r links per species}
-#### connectance, wnodf, modularity, 
-#H2 is correlated with modularity
+#_____________________________________ method Icaro
+#links per species
+net.metrics.links <- lapply(comm, networklevel, index = 'links per species') 
+net.metrics.links
 
-#c_comm<-sapply(comm,networklevel, index = "connectance")
-#wc_comm<-sapply(comm,networklevel, index = "weighted connectance")
+# Make null models for all sites using the r2dtable null
+net.nulls.r2d <- lapply(comm, nullmodel, method = "r2dtable", N = 100) 
+#net.nulls.vaz <- lapply(comm, nullmodel, method = "vaznull", N = 100) 
 
-links<-sapply(comm, networklevel, index = "links per species")
-plot(links,data$area_ha)
+# Null distribution function for links per species - calculates the network links per species metric for each null for each site (doesnt work for vaznull because it maintains connectance constant) 
+net.null.links = function(nulls){
+  net.null.metric <- list()
+  for (i in 1:length(nulls)) {
+    net.null.metric[[i]] = do.call('rbind', 
+                                   lapply(nulls[[i]], networklevel, index = 'links per species'))
+  }
+  names(net.null.metric) <- names(comm)
+  return(net.null.metric)
+} 
+r2d.links <- net.null.links(net.nulls.r2d)
+#vaz.links <- net.null.links(net.nulls.vaz)
+# Z-score function for comparing different networks
+net.zscore = function(obsval, nullval) {
+  (obsval - mean(nullval))/sd(nullval)
+}
 
+# Function that perform z-score calculation of links per species using the observed and null networks
+links.zscore = function(nulltype){
+  net.links.zscore <- list() 
+  for(i in 1:length(net.metrics.links)){
+    net.links.zscore[[i]] = net.zscore(net.metrics.links[[i]]['links per species'], 
+                                       nulltype[[i]][ ,'links per species'])
+  }
+  names(net.links.zscore) <- names(comm)
+  return(net.links.zscore)
+}
+
+
+r2d.links.zscore <- links.zscore(r2d.links)
+#vaz.links.zscore <- links.zscore(vaz.links)
+ # Change the output class from list of a list into a matrix
+  net.metric.zscore <- do.call('rbind', r2d.links.zscore)
+  #net.metric.zscore <- do.call('rbind', vaz.links.zscore)
+ # Change matrix into a dataframe
+  net.zlinks <- as.data.frame(as.table(net.metric.zscore))
+  colnames(net.zlinks) <- c('site', 'links per sp', 'z_links')
+  z_links<-net.zlinks$z_links
+
+z1_links<-z_links    
+  
+data<-cbind(data, z_links)
+data$z_links
+
+
+
+
+
+
+# statistical models with z-score
+############## Spatial structure
+hist(data$z_links)
+## 
+m1<-gls(z_links ~ intensity+logarea+forest.type, data=data)
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AICc(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(z_links~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+summary(get.models(dd,2)[[1]])
+
+## finally, refit best models with REML for final results
+m1<-lm(z_links~ intensity, data=data)#, method="REML")
+summary (m1)
 
 ```
 
@@ -667,8 +818,6 @@ plot((data$z_h2)~logarea)
 
 
 ```
-
-
 
 ```{r correlations}
 
@@ -808,7 +957,7 @@ summary(get.models(dd,1)[[1]])
 
 
 ## finally, refit best models with REML for final results
-m1best<-lm(plants ~ logarea + intensity, data=data)
+m1best<-lm(plants ~ logarea +intensity, data=data)
 summary (m1best)
 
 drop1(m1best, test= "Chisq")
@@ -861,7 +1010,7 @@ summary(get.models(dd,1)[[1]])
 
 
 ## finally, refit best models with REML for final results
-m1best<-lm(interactions ~ logarea+intensity, data=data)#, method="REML")
+m1best<-lm(interactions ~ logarea, data=data)#, method="REML")
 summary (m1best)
 
 drop1(m1best, test = "Chisq")
@@ -885,9 +1034,6 @@ drop1(m1best, test = "Chisq")
 
 m1_avmod <- model.avg(mset1)
 summary(m1_avmod)
-
-
-
 
 ##############connectance###########################
 hist(data$c)
@@ -1104,6 +1250,32 @@ summary(get.models(dd,1)[[1]])
 
 ## finally, refit best models with REML for final results
 m1best<-lm(links ~ logarea+intensity, data=data)
+summary (m1best)
+
+
+
+########## 
+###NODF
+## first, REML to compare fixed term
+m1<-gls(wnodf ~ intensity+logarea+forest.type, data=data,method="REML")# 
+
+m1a<-update(m1,correlation=corSpher(form=~x+y))
+m1b<-update(m1,correlation=corLin(form=~x+y))
+m1c<-update(m1,correlation=corRatio(form=~x+y))
+m1d<-update(m1,correlation=corGaus(form=~x+y))
+m1e<-update(m1,correlation=corExp(form=~x+y))
+
+AIC(m1,m1a,m1b,m1c,m1d,m1e) ### m1 best model
+
+### second, fit ML for best model selection Zuur, pg 90
+m1<-gls(wnodf~ intensity+logarea+forest.type, data=data, method="ML")
+summary(m1)
+dd<-dredge(m1, fixed = "intensity")
+print(dd)
+summary(get.models(dd,1)[[1]])
+
+## finally, refit best models with REML for final results
+m1best<-lm(wnodf ~ logarea+intensity, data=data)
 summary (m1best)
 
 ```
