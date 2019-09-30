@@ -79,12 +79,12 @@ MyMerge <- function(x, y){
 ###############################################
 ###### code for combine multiple matrices in a single one according to species and/or interactions
 
-setwd("~/Dropbox/MS network area AF/Analyses/network_area/data")
+setwd("~/Dropbox/MS network area AF/Analyses/network_area/communities")
 #getwd()
 ###################
 ###Species level
 ### getting the nested format for each matrix
-v<-read.csv("vivian quanti.csv", h=T, row.names = 1) 
+v<-read.csv("n16 vivian quanti.csv", h=T, row.names = 1) 
 v<-as.matrix(v)
 df_v<-as.data.frame(as.table(v))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -101,7 +101,7 @@ vi_a<-vi_a[!rowSums(vi_a[-1] ==0),]
 vi_a[!duplicated(vi_a),]
 vi_a<-unique(vi_a)
 
-athie<-read.csv("w34 athie RC.csv", h=T, row.names = 1) 
+athie<-read.csv("n9 athie RC.csv", h=T, row.names = 1) 
 athie<-as.matrix(athie)
 df_v<-as.data.frame(as.table(athie))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -116,7 +116,7 @@ at_a<-df_v[,c(2,3)]
 at_a<-at_a[!rowSums(at_a[-1] ==0),]
 at_a<-unique(at_a)
 
-castro<-read.csv("w44 Castro Cardoso.csv", h=T, row.names = 1) 
+castro<-read.csv("n3 Castro Cardoso.csv", h=T, row.names = 1) 
 castro<-as.matrix(castro)
 df_v<-as.data.frame(as.table(castro))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -132,7 +132,7 @@ cas_a<-df_v[,c(2,3)]
 cas_a<-cas_a[!rowSums(cas_a[-1] ==0),]
 cas_a<-unique(cas_a)
 
-correia<-read.csv("w30 correia PcAntas.csv", h=T,row.names = 1) 
+correia<-read.csv("n4 correia PcAntas.csv", h=T,row.names = 1) 
 v<-as.matrix(correia)
 df_v<-as.data.frame(as.table(v))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -147,7 +147,7 @@ cor_a<-df_v[,c(2,3)]
 cor_a<-cor_a[!rowSums(cor_a[-1] ==0),]
 cor_a<-unique(cor_a)
 
-fadini<-read.csv("w36 Fadini MG.csv", h=T,row.names = 1) 
+fadini<-read.csv("n10 Fadini MG.csv", h=T,row.names = 1) 
 fadini<-as.matrix(fadini)
 df_v<-as.data.frame(as.table(fadini))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -162,7 +162,7 @@ fad_a<-fad_a[!rowSums(fad_a[-1] ==0),]
 fad_a<-unique(fad_a)
 
 
-fe15<-read.csv("fe15 quanti.csv", h=T, row.names = 1) 
+fe15<-read.csv("n13 fe15 quanti.csv", h=T, row.names = 1) 
 fe15<-as.matrix(fe15)
 df_v<-as.data.frame(as.table(fe15))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -177,7 +177,7 @@ fe15_a<-fe15_a[!rowSums(fe15_a[-1] ==0),]
 fe15_a<-unique(fe15_a)
 
 
-fe25<-read.csv("fe25 quanti.csv", h=T, row.names = 1) 
+fe25<-read.csv("n14 fe25 quanti.csv", h=T, row.names = 1) 
 fe25<-as.matrix(fe25)
 df_v<-as.data.frame(as.table(fe25))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -192,7 +192,7 @@ fe25_a<-fe25_a[!rowSums(fe25_a[-1] ==0),]
 fe25_a<-unique(fe25_a)
 
 
-fe57<-read.csv("fe57 quanti.csv", h=T, row.names = 1) 
+fe57<-read.csv("n15 fe57 quanti.csv", h=T, row.names = 1) 
 fe57<-as.matrix(fe57)
 df_v<-as.data.frame(as.table(fe57))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -206,7 +206,7 @@ fe57_a<-df_v[,c(2,3)]
 fe57_a<-fe57_a[!rowSums(fe57_a[-1] ==0),]
 fe57_a<-unique(fe57_a)
 
-GP<-read.csv("w35 Galetti Pizo.csv", h=T, row.names = 1) 
+GP<-read.csv("n6 Galetti Pizo.csv", h=T, row.names = 1) 
 gp<-as.matrix(GP)
 df_v<-as.data.frame(as.table(gp))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -220,7 +220,7 @@ gp_a<-df_v[,c(2,3)]
 gp_a<-gp_a[!rowSums(gp_a[-1] ==0),]
 gp_a<-unique(gp_a)
 
-hasui<-read.csv("w32 Hasui.csv", h=T, row.names = 1) 
+hasui<-read.csv("n11 Hasui.csv", h=T, row.names = 1) 
 hasui<-as.matrix(hasui)
 df_v<-as.data.frame(as.table(hasui))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -234,7 +234,7 @@ ha_a<-df_v[,c(2,3)]
 ha_a<-ha_a[!rowSums(ha_a[-1] ==0),]
 ha_a<-unique(ha_a)
 
-kaizer<-read.csv("w28 Kaiser original.csv", h=T, row.names = 1) 
+kaizer<-read.csv("n5 Kaiser original.csv", h=T, row.names = 1) 
 kaizer<-as.matrix(kaizer)
 df_v<-as.data.frame(as.table(kaizer))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -249,7 +249,7 @@ ka_a<-ka_a[!rowSums(ka_a[-1] ==0),]
 ka_a<-unique(ka_a)
 
 
-kindel<-read.csv("w33 Kindel.csv", h=T, row.names = 1) 
+kindel<-read.csv("n8 Kindel.csv", h=T, row.names = 1) 
 kindel<-as.matrix(kindel)
 df_v<-as.data.frame(as.table(kindel))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -264,7 +264,7 @@ ki_a<-ki_a[!rowSums(ki_a[-1] ==0),]
 ki_a<-unique(ki_a)
 
 
-pizo<-read.csv("pizo quanti.csv", h=T, row.names = 1) 
+pizo<-read.csv("n7 pizo quanti.csv", h=T, row.names = 1) 
 pizo<-as.matrix(pizo)
 df_v<-as.data.frame(as.table(pizo))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -278,7 +278,7 @@ pi_a<-df_v[,c(2,3)]
 pi_a<-pi_a[!rowSums(pi_a[-1] ==0),]
 pi_a<-unique(pi_a)
 
-silva<-read.csv("w37 Wesley.csv", h=T, row.names = 1)# 
+silva<-read.csv("n1 Wesley.csv", h=T, row.names = 1)# 
 silva<-as.matrix(silva)
 df_v<-as.data.frame(as.table(silva))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -293,7 +293,7 @@ si_a<-si_a[!rowSums(si_a[-1] ==0),]
 si_a<-unique(si_a)
 
 
-botelho<-read.csv("w95 Botelho.csv", h=T,row.names = 1)# 
+botelho<-read.csv("n2 Botelho.csv", h=T,row.names = 1)# 
 bo<-as.matrix(botelho)
 df_v<-as.data.frame(as.table(bo))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_")
@@ -307,7 +307,7 @@ bo_a<-df_v[,c(2,3)]
 bo_a<-bo_a[!rowSums(bo_a[-1] ==0),]
 bo_a<-unique(bo_a)
 
-rafael<-read.csv("w93 Rafael UFRJ.csv", h=T, row.names = 1)# 
+rafael<-read.csv("n12 Rafael UFRJ.csv", h=T, row.names = 1)# 
 ra<-as.matrix(rafael)
 df_v<-as.data.frame(as.table(ra))
 df_v$cod<-paste(df_v$Var1,df_v$Var2,sep = "_") # paste the combination in the new column
@@ -342,13 +342,19 @@ n3[is.na(n3)]<-0
 head(n3)
 t1 <- as.matrix(t(n3))
 
-
+write.csv(t1, "nested_interactions.csv")
 ### nested for plants - remember changing the function "by"
 nested_p<- Reduce(MyMerge, list(si_p, bo_p,cas_p, cor_p,ka_p,fad_p,ki_p,gp_p,pi_p,fe25_p,
                                 at_p, fe15_p,fe57_p,ra_p,ha_p,vi_p)) # ordened by area
 
-nested_p[is.na(nested_p)]<-0
-t1 <- as.matrix(t(nested_p))
+### nested for plants - remember changing the function "by"
+nested_i<- Reduce(MyMerge, list(si, bo,cas,cor,ka,fad,ki,gp,pi,fe25,
+                                at, fe15,fe57,ra,ha,vi)) # ordened by area
+
+
+
+nested_i[is.na(nested_i)]<-0
+t1 <- as.matrix(t(nested_i))
 
 rownames(t1)[1]<-" "
 rownames(t1)[2]<-"Intervales"
@@ -368,12 +374,11 @@ rownames(t1)[15]<-"fragmentRJ"
 rownames(t1)[16]<-"fragmentSP"
 rownames(t1)[17]<-"restored8"
 
-m<-read.csv("test.csv", header = TRUE, row.names=1)
-str(m)
-which(m[,]>1)
 
-dist<-read.csv("distribution.csv", header = T, row.names = 1)
-hist(log(dist$N), xlab = "Number of seed-disperal events (log)", main = "")
+################# distribution frequency
+events<-read.csv("distribution.csv", header = T, row.names = 1)
+events<-distribution
+hist(log(events$N), xlab = "Number of seed-dispersal events (log)", main = "")
 
 
 ```
